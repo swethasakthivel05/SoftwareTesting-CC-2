@@ -121,7 +121,7 @@ public class AppTest {
         driver.findElement(By.xpath("//*[@id=\"rewards-modal-link\"]")).click();
         Thread.sleep(2000);
         File screen = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
-        String path = "CC:\\Users\\91701\\Desktop\\cc2softwaretesting\\screenshot.png";
+        String path = "C:\\Users\\Swetha\\Documents\\semester 4\\software testing\\softwaretestingcc2\\screenshot.png";
         FileUtils.copyFile(screen, new File(path));
     }
 
