@@ -4,6 +4,8 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PropertyConfigurator;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,8 +16,15 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.interactions.Actions;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
+
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
 
@@ -24,6 +33,22 @@ import io.github.bonigarcia.wdm.WebDriverManager;
  */
 public class AppTest {
     WebDriver driver;
+    ExtentReports reports;
+    ExtentTest test;
+    Logger logger = Logger.getLogger(AppTest.class);
+
+    @BeforeTest
+    public void setup() {
+        reports = new ExtentReports();
+        ExtentSparkReporter spark = new ExtentSparkReporter(
+                "C:\\Users\\Swetha\\Documents\\semester 4\\software testing\\softwaretestingcc2\\report.html");
+        reports.attachReporter(spark);
+        test = reports.createTest("Result");
+        WebDriverManager.chromedriver().setup();
+        driver = new ChromeDriver();
+        PropertyConfigurator.configure(
+                "C:\\Users\\Swetha\\Documents\\semester 4\\software testing\\softwaretestingcc2\\src\\main\\java\\com\\example\\resources\\log4j.properties");
+    }
 
     @BeforeMethod
     public void Testsetup() throws Exception {
@@ -55,8 +80,11 @@ public class AppTest {
         Thread.sleep(3000);
         if (check.equals(book)) {
             System.out.println("Thus the search of Chetan Bhagat is true");
+            test.log(Status.PASS, "The result is True");
+
         } else {
             System.out.println("The result is not True");
+            test.log(Status.FAIL, "The result is False");
         }
     }
 
@@ -78,8 +106,10 @@ public class AppTest {
         String find = driver.switchTo().alert().getText();
         if (find.contains("Item Successfully Added To Your Cart")) {
             System.out.println("Successfully inserted into the cart");
+            test.log(Status.PASS, "The item is inserted into the cart");
         } else {
             System.out.println("Item not inserted into the cart");
+            test.log(Status.FAIL, "The item is not inserted in the cart");
         }
     }
 
@@ -97,6 +127,12 @@ public class AppTest {
 
     @AfterMethod
     public void Testquit() {
+        driver.quit();
+    }
+
+    @AfterTest
+    public void Testend() {
+        reports.flush();
         driver.quit();
     }
 }
