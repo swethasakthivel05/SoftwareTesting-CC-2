@@ -81,10 +81,12 @@ public class AppTest {
         if (check.equals(book)) {
             System.out.println("Thus the search of Chetan Bhagat is true");
             test.log(Status.PASS, "The result is True");
+            logger.info("It contains Chetan Bhagat");
 
         } else {
             System.out.println("The result is not True");
             test.log(Status.FAIL, "The result is False");
+            logger.info("It doesn't contains Chetan Bhagat");
         }
     }
 
